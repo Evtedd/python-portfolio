@@ -1,0 +1,43 @@
+services:
+  api:
+    build: .
+    env_file: .env
+    ports:
+      - "8003:8000"
+    volumes:
+      - ./storage:/app/storage
+    depends_on:
+      - postgres
+      - qdrant
+
+  worker:
+    build: .
+    env_file: .env
+    command: python -m app.workers.main
+    volumes:
+      - ./storage:/app/storage
+    depends_on:
+      - postgres
+      - qdrant
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: multimodal
+      POSTGRES_USER: multimodal
+      POSTGRES_PASSWORD: multimodal
+    ports:
+      - "5437:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  qdrant:
+    image: qdrant/qdrant:v1.9.2
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+volumes:
+  postgres_data:
+  qdrant_data:
