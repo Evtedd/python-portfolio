@@ -1,0 +1,31 @@
+services:
+  api:
+    build: .
+    env_file: .env
+    ports:
+      - "8004:8000"
+    depends_on:
+      - postgres
+      - qdrant
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: orchestrator
+      POSTGRES_USER: orchestrator
+      POSTGRES_PASSWORD: orchestrator
+    ports:
+      - "5438:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  qdrant:
+    image: qdrant/qdrant:v1.9.2
+    ports:
+      - "6334:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+volumes:
+  postgres_data:
+  qdrant_data:

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Market Analytics</title>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #101418;
+        color: #eef2f3;
+      }
+      header {
+        padding: 18px 24px;
+        border-bottom: 1px solid #2b333b;
+      }
+      main {
+        padding: 18px 24px;
+      }
+      select {
+        padding: 8px 10px;
+        background: #171d23;
+        color: #eef2f3;
+        border: 1px solid #38444f;
+      }
+      #chart {
+        width: 100%;
+        height: 620px;
+      }
+      #alerts {
+        margin-top: 12px;
+        color: #f8d66d;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Real time Market Analytics</h1>
+      <select id="symbol"></select>
+    </header>
+    <main>
+      <div id="chart"></div>
+      <div id="alerts"></div>
+    </main>
+    <script>
+      const symbolSelect = document.getElementById("symbol");
+      const alerts = document.getElementById("alerts");
+      let socket;
+      const points = { x: [], y: [] };
+
+      async function loadSymbols() {
+        const response = await fetch("/symbols");
+        const symbols = await response.json();
+        symbolSelect.innerHTML = symbols.map((item) => `<option>${item}</option>`).join("");
+        connect(symbols[0]);
+      }
+
+      function connect(symbol) {
+        if (socket) socket.close();
+        points.x = [];
+        points.y = [];
+        Plotly.newPlot("chart", [{ x: points.x, y: points.y, mode: "lines", name: symbol }], {
+          paper_bgcolor: "#101418",
+          plot_bgcolor: "#101418",
+          font: { color: "#eef2f3" },
+          margin: { t: 20 }
+        });
+        socket = new WebSocket(`ws://${location.host}/ws/${symbol}`);
+        socket.onmessage = (event) => {
+          const message = JSON.parse(event.data);
+          if (message.type === "tick") {
+            points.x.push(message.data.event_time);
+            points.y.push(message.data.price);
+            if (points.x.length > 200) {
+              points.x.shift();
+              points.y.shift();
+            }
+            Plotly.update("chart", { x: [points.x], y: [points.y] });
+          }
+          if (message.type === "alert") {
+            alerts.textContent = message.data.message;
+          }
+        };
+      }
+
+      symbolSelect.addEventListener("change", () => connect(symbolSelect.value));
+      loadSymbols();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+services:
+  api:
+    build: .
+    env_file: .env
+    ports:
+      - "8005:8000"
+    depends_on:
+      - timescale
+      - redis
+
+  ingest:
+    build: .
+    env_file: .env
+    command: python -m app.ingest.worker
+    depends_on:
+      - timescale
+      - redis
+
+  timescale:
+    image: timescale/timescaledb:2.15.1-pg16
+    environment:
+      POSTGRES_DB: market
+      POSTGRES_USER: market
+      POSTGRES_PASSWORD: market
+    ports:
+      - "5439:5432"
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+
+volumes:
+  timescale_data:
