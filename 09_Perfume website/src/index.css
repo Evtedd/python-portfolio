@@ -1,0 +1,66 @@
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:#0a0a0a;color:#f0ece4;font-family:'Cormorant Garamond',serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+::selection{background:#c9a96e33;color:#f0ece4}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:#0a0a0a}
+::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:3px}
+input:focus,textarea:focus{outline:none}
+img{display:block}
+
+/* Hero: very slow cinematic zoom, barely perceptible, 20s cycle */
+@keyframes heroBreath{0%{transform:scale(1)}100%{transform:scale(1.04)}}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes toastSlide{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* Card image zoom on hover */
+.nmh-card:hover .nmh-card-img img{transform:scale(1.06)}
+.nmh-card-img img{transition:transform .7s cubic-bezier(.25,.46,.45,.94)}
+
+/* Card: warm lift + subtle glow */
+.nmh-card{transition:transform .45s cubic-bezier(.25,.46,.45,.94),border-color .45s ease,box-shadow .45s ease}
+.nmh-card:hover{transform:translateY(-5px);border-color:#a07d4a;box-shadow:0 12px 40px rgba(201,169,110,.06)}
+
+/* Buttons: tactile micro lift */
+.nmh-btn-p{transition:background .3s,transform .25s}
+.nmh-btn-p:hover{background:#dbb878!important;transform:translateY(-1px)}
+.nmh-btn-o{transition:border-color .3s,color .3s,transform .25s}
+.nmh-btn-o:hover{border-color:#c9a96e!important;color:#c9a96e!important;transform:translateY(-1px)}
+
+/* Product page image zoom */
+.nmh-prod-img:hover img{transform:scale(1.03)}
+.nmh-prod-img img{transition:transform .9s cubic-bezier(.25,.46,.45,.94)}
+
+/* Warm section divider glow */
+.nmh-glow{position:relative}
+.nmh-glow::before{content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);width:min(420px,60%);height:1px;background:linear-gradient(90deg,transparent,rgba(201,169,110,.18),transparent);pointer-events:none}
+
+/* Reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.05ms!important}
+  .nmh-card-img img,.nmh-prod-img img{transform:none!important}
+}
+
+/* Mobile */
+@media(max-width:900px){
+  .nmh-dnav{display:none!important}
+  .nmh-mbtn{display:block!important}
+  .nmh-card:hover{transform:none;box-shadow:none}
+  .nmh-card:hover .nmh-card-img img{transform:none}
+}
+
+/* Enhanced luxury animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes borderGlow{0%,100%{border-color:#1a1a1a}50%{border-color:#a07d4a}}
+
+/* Finder floating button pulse */
+.nmh-finder-btn{animation:fadeUp .5s ease}
+
+/* Section title underline animation */
+.nmh-title-line{width:0;height:1px;background:#c9a96e;margin:16px auto 0;transition:width 1s cubic-bezier(.25,.46,.45,.94)}
+.nmh-title-line.visible{width:60px}
+
+/* Smooth page transitions */
+.nmh-page-enter{animation:fadeUp .4s ease}
