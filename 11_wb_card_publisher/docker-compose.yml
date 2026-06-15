@@ -1,0 +1,21 @@
+services:
+  api:
+    build: .
+    env_file: .env
+    ports:
+      - "8011:8000"
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: wb_cards
+      POSTGRES_USER: wb_cards
+      POSTGRES_PASSWORD: wb_cards
+    ports:
+      - "54311:5432"
+    volumes:
+      - wb_cards_pg:/var/lib/postgresql/data
+
+volumes:
+  wb_cards_pg:
