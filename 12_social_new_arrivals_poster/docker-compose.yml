@@ -1,0 +1,21 @@
+services:
+  api:
+    build: .
+    env_file: .env
+    ports:
+      - "8012:8000"
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: social_poster
+      POSTGRES_USER: social_poster
+      POSTGRES_PASSWORD: social_poster
+    ports:
+      - "54312:5432"
+    volumes:
+      - social_poster_pg:/var/lib/postgresql/data
+
+volumes:
+  social_poster_pg:
