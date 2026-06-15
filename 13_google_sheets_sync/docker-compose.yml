@@ -1,0 +1,21 @@
+services:
+  app:
+    build: .
+    env_file: .env
+    ports:
+      - "8013:8000"
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: sheets_sync
+      POSTGRES_USER: sheets_sync
+      POSTGRES_PASSWORD: sheets_sync
+    ports:
+      - "54313:5432"
+    volumes:
+      - sheets_sync_pg:/var/lib/postgresql/data
+
+volumes:
+  sheets_sync_pg:
